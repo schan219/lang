@@ -5,13 +5,14 @@ import (
 	"fmt"
 )
 type Node struct {
-	Function   string `"("@Ident`
+	Function   string `"(" (@Ident|"+")`
 	Arguments []*Argument `(@@)* ")"`
 }
 
 type Argument struct {
-	String    string  `@String`
-	Num       float64     `| @Float | @Int`
+	Arg		  []*Node `@@`
+	String    string  `| @String`
+	Num       float64 `| @Float | @Int`
 }
 
 func main () {
@@ -24,7 +25,7 @@ func main () {
 	root := &Node{}
 
 	fmt.Printf("%+v\n", root)
-	parser.ParseString(`(joe 10.2 "hi" 3)`, root)
+	parser.ParseString(`(joe "hi" 3  (+ 10 10))`, root)
 
 	fmt.Printf("%+v\n", root)
 }
