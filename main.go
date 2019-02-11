@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 type Node struct {
-	Function   string `"(" @@* ")"`
+	Function   string `"("@Ident")"`
 }
 
 type Argument struct {
@@ -20,10 +20,10 @@ func main () {
 		panic(err)
 	}
 
-	root := Node{}
+	root := &Node{}
 
 	fmt.Printf("%+v\n", root)
-	parser.ParseString(`( + )`, root)
+	parser.ParseString(`(joe)`, root)
 
 	fmt.Printf("%+v\n", root)
 }
