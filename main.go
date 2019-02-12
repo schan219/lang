@@ -10,9 +10,10 @@ type Node struct {
 }
 
 type Argument struct {
-	Arg		  []*Node `@@`
-	String    string  `| @String`
-	Num       float64 `| @Float | @Int`
+	Arg		   []*Node `"(" @@ ")"`
+	BinString  string  `| "b"@Int`
+	String     string  `| @String`
+	Num        float64 `| @Float | @Int`
 }
 
 func main () {
@@ -25,7 +26,7 @@ func main () {
 	root := &Node{}
 
 	fmt.Printf("%+v\n", root)
-	parser.ParseString(`(joe "hi" 3  (+ 10 10))`, root)
+	parser.ParseString(`(joe "hi" (jo 10 10) 3 b10)`, root)
 
-	fmt.Printf("%+v\n", root)
+	fmt.Printf("%+v\n", root.Arguments)
 }
