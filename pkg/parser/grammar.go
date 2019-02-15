@@ -1,9 +1,4 @@
-package main
-
-import (
-	"fmt"
-	"github.com/alecthomas/participle"
-)
+package parser
 
 type Program struct {
 	DefOrMain *DefOrMain `@@`
@@ -32,6 +27,7 @@ type FunctionDecl struct {
 type Expr struct {
 	Branch       *Branch       `@@`
 	Cond         *Cond         `| @@`
+	Loop		 *Loop         `| @@`
 	LogicalOp    []*Expr       `| "(" ("and"|"or") @@ (@@)+ ")"`
 	FunctionCall *FunctionCall `| @@`
 	Boolean      string        `| @"true" | @"false"`
@@ -52,20 +48,14 @@ type Cond struct {
 	Else  []*Expr `("[" "else" @@ "]")? ")"`
 }
 
+type Loop struct {
+	Start *Expr `"(" "for" "(" "(" @@ ")"`
+	End   *Expr `"(" "<" "i" @@ ")"`
+	Inc   *Expr `"(" "+" "i" @@ ")" ")"`
+	Body  *Expr `@@ ")"`
+}
+
 type FunctionCall struct {
 	Name      string  `"(" @Ident`
 	Arguments []*Expr `(@@)* ")"`
-}
-
-func main() {
-	parser, err := participle.Build(&Program{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	root := &Program{}
-	parser.ParseString(`(main () (joe "hi" (jo 10 10) 3 b10))`, root)
-
-	fmt.Printf("%+v\n", root.DefOrMain.Main.Body.FunctionCall.Arguments[0].String)
 }
