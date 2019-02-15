@@ -19,7 +19,7 @@ type Main struct {
 }
 
 type FunctionDecl struct {
-	Name string  `"(" "define-fn" @Ident `
+	Name string  `"(" "defun" @Ident `
 	Args []*Expr `"(" (@@)* ")" `
 	Body *Expr   `@@ ")"`
 }
@@ -29,6 +29,7 @@ type Expr struct {
 	Boolean   string    `| @"true" | @"false"`
 	BinString string    `| "b"@Int`
 	Num       float64   `| @Float | @Int`
+	Name      string    `| @Ident`
 	String    string    `| @String`
 }
 
