@@ -56,6 +56,6 @@ type Loop struct {
 }
 
 type FunctionCall struct {
-	Name      string  `"(" @Ident`
-	Arguments []*Expr `(@@)* ")"`
+	Name string  `"(" @Ident`
+	Args []*Expr `(@@)* ")"`
 }
