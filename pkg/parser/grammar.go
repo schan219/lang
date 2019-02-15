@@ -43,15 +43,14 @@ type Branch struct {
 }
 
 type Cond struct {
-	Cond  string  `"(" "cond" `
-	Cases []*Expr `("[" @@ @@ "]")+`
+	Cases []*Expr `"(" "cond" ("[" @@ @@ "]")+`
 	Else  []*Expr `("[" "else" @@ "]")? ")"`
 }
 
 type Loop struct {
 	Start *Expr `"(" "for" "(" "(" @@ ")"`
 	End   *Expr `"(" "<" "i" @@ ")"`
-	Inc   *Expr `"(" "+" "i" @@ ")" ")"`
+	Step  *Expr `"(" "+" "i" @@ ")" ")"`
 	Body  *Expr `@@ ")"`
 }
 
