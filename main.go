@@ -1,32 +1,71 @@
 package main
 
 import (
-	"github.com/alecthomas/participle"
 	"fmt"
+	"github.com/alecthomas/participle"
 )
-type Node struct {
-	Function   string `"(" (@Ident|"+")`
-	Arguments []*Argument `(@@)* ")"`
+
+type Program struct {
+	DefOrMain *DefOrMain `@@`
 }
 
-type Argument struct {
-	Arg		   []*Node `"(" @@ ")"`
-	BinString  string  `| "b"@Int`
-	String     string  `| @String`
-	Num        float64 `| @Float | @Int`
+type DefOrMain struct {
+	Definition *Definition `@@`
+	Main       *Main       `| @@`
 }
 
-func main () {
-	parser, err := participle.Build(&Node{})
-	
+type Definition struct {
+	FunctionDecl *FunctionDecl `@@`
+}
+
+type Main struct {
+	Args []*Expr `"(" "main" "(" (@@)* ")" `
+	Body *Expr   `@@ ")"`
+}
+
+type FunctionDecl struct {
+	Name string  `"(" "define-fn" @Ident `
+	Args []*Expr `"(" (@@)* ")" `
+	Body *Expr   `@@ ")"`
+}
+
+type Expr struct {
+	Branch       *Branch       `@@`
+	Cond         *Cond         `| @@`
+	LogicalOp    []*Expr       `| "(" ("and"|"or") @@ (@@)+ ")"`
+	FunctionCall *FunctionCall `| @@`
+	Boolean      string        `| @"true" | @"false"`
+	BinString    string        `| "b"@Int`
+	Num          float64       `| @Float | @Int`
+	String       string        `| @String`
+}
+
+type Branch struct {
+	Condition *Expr `"(" "if" @@`
+	Then      *Expr `@@`
+	Else      *Expr `@@ ")"`
+}
+
+type Cond struct {
+	Cond  string  `"(" "cond" `
+	Cases []*Expr `("[" @@ @@ "]")+`
+	Else  []*Expr `("[" "else" @@ "]")? ")"`
+}
+
+type FunctionCall struct {
+	Name      string  `"(" @Ident`
+	Arguments []*Expr `(@@)* ")"`
+}
+
+func main() {
+	parser, err := participle.Build(&Program{})
+
 	if err != nil {
 		panic(err)
 	}
 
-	root := &Node{}
+	root := &Program{}
+	parser.ParseString(`(main () (joe "hi" (jo 10 10) 3 b10))`, root)
 
-	fmt.Printf("%+v\n", root)
-	parser.ParseString(`(joe "hi" (jo 10 10) 3 b10)`, root)
-
-	fmt.Printf("%+v\n", root.Arguments)
+	fmt.Printf("%+v\n", root.DefOrMain.Main.Body.FunctionCall.Arguments[0].String)
 }
