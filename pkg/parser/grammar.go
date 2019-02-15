@@ -25,36 +25,14 @@ type FunctionDecl struct {
 }
 
 type Expr struct {
-	Branch       *Branch       `@@`
-	Cond         *Cond         `| @@`
-	Loop         *Loop         `| @@`
-	LogicalOp    []*Expr       `| "(" ("and"|"or") @@ (@@)+ ")"`
-	FunctionCall *FunctionCall `| @@`
-	Boolean      string        `| @"true" | @"false"`
-	BinString    string        `| "b"@Int`
-	Num          float64       `| @Float | @Int`
-	String       string        `| @String`
+	Function  *Function `@@`
+	Boolean   string    `| @"true" | @"false"`
+	BinString string    `| "b"@Int`
+	Num       float64   `| @Float | @Int`
+	String    string    `| @String`
 }
 
-type Branch struct {
-	Condition *Expr `"(" "if" @@`
-	Then      *Expr `@@`
-	Else      *Expr `@@ ")"`
-}
-
-type Cond struct {
-	Cases []*Expr `"(" "cond" ("[" @@ @@ "]")+`
-	Else  []*Expr `("[" "else" @@ "]")? ")"`
-}
-
-type Loop struct {
-	Start *Expr `"(" "for" "(" "(" @@ ")"`
-	End   *Expr `"(" "<" "i" @@ ")"`
-	Step  *Expr `"(" "+" "i" @@ ")" ")"`
-	Body  *Expr `@@ ")"`
-}
-
-type FunctionCall struct {
+type Function struct {
 	Name string  `"(" @Ident`
 	Args []*Expr `(@@)* ")"`
 }
