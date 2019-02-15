@@ -11,6 +11,7 @@ type DefOrMain struct {
 
 type Definition struct {
 	FunctionDecl *FunctionDecl `@@`
+	VarDecl      *VarDecl      `@@`
 }
 
 type Main struct {
@@ -22,6 +23,11 @@ type FunctionDecl struct {
 	Name string  `"(" "defun" @Ident `
 	Args []*Expr `"(" (@@)* ")" `
 	Body *Expr   `@@ ")"`
+}
+
+type VarDecl struct {
+	Name  string `"(" "defvar" @Ident `
+	Value *Expr  `@@ ")"`
 }
 
 type Expr struct {
