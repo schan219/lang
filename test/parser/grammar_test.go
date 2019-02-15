@@ -1,9 +1,9 @@
 package parser
 
 import (
+	"../../pkg/parser"
 	"fmt"
 	"github.com/alecthomas/participle"
-	"../../pkg/parser"
 	"testing"
 )
 
@@ -19,7 +19,7 @@ func TestMain(t *testing.T) {
 	v := root.DefOrMain.Main.Body.FunctionCall.Arguments[0].String
 	fmt.Printf("%+v\n", v)
 
-	if (v != "hi") {
+	if v != "hi" {
 		t.Error("Expected \"hi\", got ", v)
 	}
 }

@@ -27,7 +27,7 @@ type FunctionDecl struct {
 type Expr struct {
 	Branch       *Branch       `@@`
 	Cond         *Cond         `| @@`
-	Loop		 *Loop         `| @@`
+	Loop         *Loop         `| @@`
 	LogicalOp    []*Expr       `| "(" ("and"|"or") @@ (@@)+ ")"`
 	FunctionCall *FunctionCall `| @@`
 	Boolean      string        `| @"true" | @"false"`
