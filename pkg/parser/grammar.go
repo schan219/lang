@@ -1,12 +1,8 @@
 package parser
 
 type Program struct {
-	DefOrMain *DefOrMain `@@`
-}
-
-type DefOrMain struct {
-	Definition *Definition `@@`
-	Main       *Main       `| @@`
+	Definitions  []*Definition `@@`
+	Main         *Main       `| @@`
 }
 
 type Definition struct {
@@ -31,15 +27,8 @@ type VarDecl struct {
 }
 
 type Expr struct {
-	Function  *Function `@@`
-	Boolean   string    `| @"true" | @"false"`
-	BinString string    `| "b"@Int`
-	Num       float64   `| @Float | @Int`
-	Name      string    `| @Ident`
-	String    string    `| @String`
-}
-
-type Function struct {
-	Name string  `"(" @Ident`
-	Args []*Expr `(@@)* ")"`
+	Atom  string  `@Ident`
+	Str   string  `| @String`
+	Val   int32   `| @Int`
+	Float float64 `| @Float`
 }
