@@ -4,56 +4,36 @@ import (
 	"../../pkg/parser"
 	"fmt"
 	"github.com/alecthomas/participle"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestMain(t *testing.T) {
+
+func TestMainPrimitives (t *testing.T) {
+	// Build the assertor and the tokenizer
 	tokenizer, err := participle.Build(&parser.Program{})
+	assert := assert.New(t)
 
 	if err != nil {
 		panic(err)
 	}
 
-	root := &parser.Program{}
-	tokenizer.ParseString(`(main () (joe "hi" (jo 10 10) 3 b10))`, root)
-	v := root.DefOrMain.Main.Body.Function.Args[0].String
-
-	if v != "hi" {
-		t.Error("Expected \"hi\", got ", v)
+	// Holds in the values for later
+	// Each program is in the form
+	// @program:<@field,@value> 
+	//
+	programs  := map[[2]string]{
+		"(main () true)": []string {
+			"Atom",
+			"true"
+		},
+		"(main () b101101)": []string {
+			"Atom",
+			"b101101"
+		},
+		
 	}
-}
-
-func TestBoolean(t *testing.T) {
-	tokenizer, err := participle.Build(&parser.Program{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	root := &parser.Program{}
-	tokenizer.ParseString(`(main () true)`, root)
-	v := root.DefOrMain.Main.Body.Boolean
-
-	if v != "true" {
-		t.Error("Expected \"true\", got ", v)
-	}
-}
-
-func TestBinString(t *testing.T) {
-	tokenizer, err := participle.Build(&parser.Program{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	root := &parser.Program{}
-	tokenizer.ParseString(`(main () "b123")`, root)
-	v := root.DefOrMain.Main.Body
-	fmt.Printf("%+v\n", v)
-
-	if v.BinString != "b123" {
-		t.Error("Expected \"b123\", got ", v.BinString)
-	}
+	
 }
 
 func TestNum(t *testing.T) {

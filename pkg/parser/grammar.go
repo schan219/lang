@@ -29,6 +29,5 @@ type VarDecl struct {
 type Expr struct {
 	Atom  string  `@Ident`
 	Str   string  `| @String`
-	Val   int32   `| @Int`
-	Float float64 `| @Float`
+	Int   int32   `| @Int`
 }
