@@ -1,11 +1,14 @@
 package parser
 
 import (
-	"../../pkg/parser"
-	"fmt"
+	_"fmt"
+	"testing"
+	"reflect"
+
+	"lang/pkg/parser"
+	
 	"github.com/alecthomas/participle"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 
@@ -21,74 +24,54 @@ func TestMainPrimitives (t *testing.T) {
 	// Holds in the values for later
 	// Each program is in the form
 	// @program:<@field,@value> 
-	//
-	programs  := map[[2]string]{
-		"(main () true)": []string {
+	programs  := map[string][2]string {
+		"(main () true)": [2]string {
 			"Atom",
-			"true"
+			"true",
 		},
-		"(main () b101101)": []string {
+		"(main () b101101)": [2]string {
 			"Atom",
-			"b101101"
+			"b101101",
 		},
-		
+		"(main () 1)": [2]string {
+			"Int",
+			"10",
+		},
+		"(main () 3)": [2]string {
+			"Int",
+			"10",
+		},
+		"(main () 1000033)": [2]string {
+			"Int",
+			"1000033",
+		},
+		`(main () "JOE_IS_COOL")`: [2]string {
+			"Str",
+			"JOE_IS_COOL",
+		},
 	}
-	
+
+
+    for sourceCode, output := range programs {
+		fieldName := output[0]
+		fieldVal := output[1]
+
+		root := &parser.Program{}
+		tokenizer.ParseString(sourceCode, root)
+
+		// Test the non nillness of main.
+		assert.NotNilf(root.Main, "Hmm, main is nil for `%s`", sourceCode)
+
+		// Test if parsed value is expected.
+		parsedOutput := reflect.ValueOf(*root.Main).FieldByName(fieldName).String()
+		assert.Equalf(
+			parsedOutput, fieldVal,
+			"Hmm, we failed, for: %s", sourceCode,
+		)
+    }
 }
 
-func TestNum(t *testing.T) {
-	tokenizer, err := participle.Build(&parser.Program{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	root := &parser.Program{}
-	tokenizer.ParseString(`(main () 1)`, root)
-	v := root.DefOrMain.Main.Body.Num
-
-	if v != 1 {
-		t.Error("Expected \"1\", got ", v)
-	}
-}
-
-func TestSymbol(t *testing.T) {
-	tokenizer, err := participle.Build(&parser.Program{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	root := &parser.Program{}
-	str := `(main () ALICE_ADDR)`
-
-	tokenizer.ParseString(str, root)
-
-	v := root.DefOrMain.Main.Body
-
-	if v.Name != "ALICE_ADDR" {
-		t.Error("Expected \"ALICE_ADDR\" got ", v.Name)
-	}
-}
-
-func TestString(t *testing.T) {
-	tokenizer, err := participle.Build(&parser.Program{})
-
-	if err != nil {
-		panic(err)
-	}
-
-	root := &parser.Program{}
-	str := `(main () "a")`
-
-	tokenizer.ParseString(str, root)
-
-	v := root.DefOrMain.Main.Body
-
-	if v.String != "a" {
-		t.Error("Expected \"a\", got ", v.String)
-	}
-}
+/** I will refactor these later -- Joe
 
 func TestFunctionDecl(t *testing.T) {
 	tokenizer, err := participle.Build(&parser.Program{})
@@ -162,3 +145,4 @@ func TestFunction(t *testing.T) {
 		t.Error("Expected \"3\", got ", v.Body.Function.Args[2].Num)
 	}
 }
+*/
