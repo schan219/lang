@@ -72,7 +72,7 @@ func TestMainPrimitives (t *testing.T) {
 
 		// Test if parsed value is expected.
 		parsedOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).String()
-		fmt.Printf("%s: %s\n", fieldName, parsedOutput)
+
 		// We must treat ints different to strings
 		if parsedOutput == "<int32 Value>" {
 			intOuput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
