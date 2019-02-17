@@ -1,7 +1,7 @@
 package parser
 
 import (
-	_"fmt"
+	"fmt"
 	"testing"
 	"reflect"
 
@@ -50,8 +50,12 @@ func TestMainPrimitives (t *testing.T) {
 			Field:  "Int",
 			ValInt: 1000033,
 		},
+		`(main () "1")`: TestVal {
+			Field:  "Str",
+			ValStr: "1",
+		},
 		`(main () "JOE_IS_COOL")`: TestVal {
-			Field:  "Int",
+			Field:  "Str",
 			ValStr: "JOE_IS_COOL",
 		},
 	}
@@ -68,7 +72,7 @@ func TestMainPrimitives (t *testing.T) {
 
 		// Test if parsed value is expected.
 		parsedOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).String()
-		
+		fmt.Printf("%s: %s\n", fieldName, parsedOutput)
 		// We must treat ints different to strings
 		if parsedOutput == "<int32 Value>" {
 			intOuput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
