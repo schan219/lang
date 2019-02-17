@@ -11,6 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type TestVal struct {
+	Field   string
+	ValStr  string
+	ValInt  int32
+}
 
 func TestMainPrimitives (t *testing.T) {
 	// Build the assertor and the tokenizer
@@ -24,37 +29,36 @@ func TestMainPrimitives (t *testing.T) {
 	// Holds in the values for later
 	// Each program is in the form
 	// @program:<@field,@value> 
-	programs  := map[string][2]string {
-		"(main () true)": [2]string {
-			"Atom",
-			"true",
+	programs  := map[string]TestVal {
+		"(main () true)": TestVal {
+			Field:  "Atom",
+			ValStr: "true",
 		},
-		"(main () b101101)": [2]string {
-			"Atom",
-			"b101101",
+		"(main () b101101)": TestVal {
+			Field:  "Atom",
+			ValStr: "b101101",
 		},
-		"(main () 1)": [2]string {
-			"Int",
-			"10",
+		"(main () 1)": TestVal {
+			Field:  "Int",
+			ValInt: 1,
 		},
-		"(main () 3)": [2]string {
-			"Int",
-			"10",
+		"(main () 3)": TestVal {
+			Field:  "Int",
+			ValInt: 3,
 		},
-		"(main () 1000033)": [2]string {
-			"Int",
-			"1000033",
+		"(main () 1000033)": TestVal {
+			Field:  "Int",
+			ValInt: 1000033,
 		},
-		`(main () "JOE_IS_COOL")`: [2]string {
-			"Str",
-			"JOE_IS_COOL",
+		`(main () "JOE_IS_COOL")`: TestVal {
+			Field:  "Int",
+			ValStr: "JOE_IS_COOL",
 		},
 	}
 
 
     for sourceCode, output := range programs {
-		fieldName := output[0]
-		fieldVal := output[1]
+		fieldName := output.Field
 
 		root := &parser.Program{}
 		tokenizer.ParseString(sourceCode, root)
@@ -63,11 +67,22 @@ func TestMainPrimitives (t *testing.T) {
 		assert.NotNilf(root.Main, "Hmm, main is nil for `%s`", sourceCode)
 
 		// Test if parsed value is expected.
-		parsedOutput := reflect.ValueOf(*root.Main).FieldByName(fieldName).String()
-		assert.Equalf(
-			parsedOutput, fieldVal,
-			"Hmm, we failed, for: %s", sourceCode,
-		)
+		parsedOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).String()
+		
+		// We must treat ints different to strings
+		if parsedOutput == "<int32 Value>" {
+			intOuput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
+			assert.Equalf(
+				output.ValInt,
+				int32(intOuput),	// This conversion is because reflect outputs to 64 bit ints
+				"Hmm, we faild the int output, for: %s", sourceCode,
+			)
+		} else {
+			assert.Equalf(
+				output.ValStr, parsedOutput,
+				"Hmm, we failed the string output, for: %s", sourceCode,
+			)
+		}
     }
 }
 
