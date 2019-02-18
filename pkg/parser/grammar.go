@@ -27,7 +27,8 @@ type VarDecl struct {
 }
 
 type Expr struct {
-	Atom  string  `@Ident`
+	Expr  []*Expr `"(" (@@)* ")"`
+	Atom  string  `| @Ident`
 	Str   string  `| @String`
 	Int   int32   `| @Int`
 }

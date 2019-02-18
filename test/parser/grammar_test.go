@@ -1,7 +1,7 @@
 package parser
 
 import (
-	_"fmt"
+	"fmt"
 	"testing"
 	"reflect"
 
@@ -57,7 +57,7 @@ func TestMainPrimitives (t *testing.T) {
 		`(main () "JOE_IS_COOL")`: TestVal {
 			Field:  "Str",
 			ValStr: "JOE_IS_COOL",
-		},
+		}
 	}
 
 
@@ -69,7 +69,6 @@ func TestMainPrimitives (t *testing.T) {
 
 		// Test the non nillness of main.
 		assert.NotNilf(root.Main, "Hmm, main is nil for `%s`", sourceCode)
-
 		// Test if parsed value is expected.
 		parsedOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).String()
 
