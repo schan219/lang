@@ -6,7 +6,7 @@ type Program struct {
 }
 
 type Definition struct {
-	FunctionDecl *FunctionDecl `@@`
+	FnDecl *FnDecl `@@`
 	VarDecl      *VarDecl      `@@`
 }
 
@@ -15,7 +15,7 @@ type Main struct {
 	Body *Expr   `@@ ")"`
 }
 
-type FunctionDecl struct {
+type FnDecl struct {
 	Name string  `"(" "defun" @Ident `
 	Args []*Expr `"(" (@@)* ")" `
 	Body *Expr   `@@ ")"`
@@ -26,8 +26,13 @@ type VarDecl struct {
 	Value *Expr  `@@ ")"`
 }
 
+type FnCall struct {
+	Name  string  `"(" @Ident`
+	Args  []*Expr `(@@)* ")"`
+}
+
 type Expr struct {
-	Expr  []*Expr `"(" (@@)* ")"`
+	Fn    *FnCall `@@`
 	Atom  string  `| @Ident`
 	Str   string  `| @String`
 	Int   int32   `| @Int`

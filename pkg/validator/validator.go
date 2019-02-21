@@ -10,6 +10,7 @@ type Def struct {
 	DefName   string
 	DefType   string
 	DefIndex  int
+	ArgCount  int
 }
 
 // Stores the definition locations
@@ -45,7 +46,20 @@ func Validate (prgm parser.Program) {
 				DefName: name,
 				DefType: "function",
 				DefIndex: i,
+				ArgCount: len(def.FunctionDecl.Args)
 			}
 		}
 	}
+
+	// Statically analyze each function
+	for i,def := range prgm.Definitions {
+		validateFn(def)
+	}
 }
+
+func validateFn (def parser.FunctionDecl) {
+	if (def.Body) {
+		
+	}
+}
+
