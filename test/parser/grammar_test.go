@@ -1,23 +1,22 @@
 package parser
 
 import (
-	"fmt"
-	"testing"
 	"reflect"
+	"testing"
 
 	"lang/pkg/parser"
-	
+
 	"github.com/alecthomas/participle"
 	"github.com/stretchr/testify/assert"
 )
 
 type TestVal struct {
-	Field   string
-	ValStr  string
-	ValInt  int32
+	Field  string
+	ValStr string
+	ValInt int32
 }
 
-func TestMainPrimitives (t *testing.T) {
+func TestMainPrimitives(t *testing.T) {
 	// Build the assertor and the tokenizer
 	tokenizer, err := participle.Build(&parser.Program{})
 	assert := assert.New(t)
@@ -28,40 +27,39 @@ func TestMainPrimitives (t *testing.T) {
 
 	// Holds in the values for later
 	// Each program is in the form
-	// @program:<@field,@value> 
-	programs  := map[string]TestVal {
-		"(main () true)": TestVal {
+	// @program:<@field,@value>
+	programs := map[string]TestVal{
+		"(main () true)": {
 			Field:  "Atom",
 			ValStr: "true",
 		},
-		"(main () b101101)": TestVal {
+		"(main () b101101)": {
 			Field:  "Atom",
 			ValStr: "b101101",
 		},
-		"(main () 1)": TestVal {
+		"(main () 1)": {
 			Field:  "Int",
 			ValInt: 1,
 		},
-		"(main () 3)": TestVal {
+		"(main () 3)": {
 			Field:  "Int",
 			ValInt: 3,
 		},
-		"(main () 1000033)": TestVal {
+		"(main () 1000033)": {
 			Field:  "Int",
 			ValInt: 1000033,
 		},
-		`(main () "1")`: TestVal {
+		`(main () "1")`: {
 			Field:  "Str",
 			ValStr: "1",
 		},
-		`(main () "JOE_IS_COOL")`: TestVal {
+		`(main () "JOE_IS_COOL")`: {
 			Field:  "Str",
 			ValStr: "JOE_IS_COOL",
-		}
+		},
 	}
 
-
-    for sourceCode, output := range programs {
+	for sourceCode, output := range programs {
 		fieldName := output.Field
 
 		root := &parser.Program{}
@@ -77,8 +75,8 @@ func TestMainPrimitives (t *testing.T) {
 			intOuput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
 			assert.Equalf(
 				output.ValInt,
-				int32(intOuput),	// This conversion is because reflect outputs to 64 bit ints
-				"Hmm, we faild the int output, for: %s", sourceCode,
+				int32(intOuput), // This conversion is because reflect outputs to 64 bit ints
+				"Hmm, we failed the int output, for: %s", sourceCode,
 			)
 		} else {
 			assert.Equalf(
@@ -86,7 +84,7 @@ func TestMainPrimitives (t *testing.T) {
 				"Hmm, we failed the string output, for: %s", sourceCode,
 			)
 		}
-    }
+	}
 }
 
 /** I will refactor these later -- Joe

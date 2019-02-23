@@ -1,13 +1,13 @@
 package parser
 
 type Program struct {
-	Definitions  []*Definition `@@`
-	Main         *Main       `| @@`
+	Definitions []*Definition `@@`
+	Main        *Main         `| @@`
 }
 
 type Definition struct {
-	FnDecl *FnDecl `@@`
-	VarDecl      *VarDecl      `@@`
+	FnDecl  *FnDecl  `@@`
+	VarDecl *VarDecl `@@`
 }
 
 type Main struct {
@@ -27,13 +27,13 @@ type VarDecl struct {
 }
 
 type FnCall struct {
-	Name  string  `"(" @Ident`
-	Args  []*Expr `(@@)* ")"`
+	Name string  `"(" @Ident`
+	Args []*Expr `(@@)* ")"`
 }
 
 type Expr struct {
-	Fn    *FnCall `@@`
-	Atom  string  `| @Ident`
-	Str   string  `| @String`
-	Int   int32   `| @Int`
+	Fn   *FnCall `@@`
+	Atom string  `| @Ident`
+	Str  string  `| @String`
+	Int  int32   `| @Int`
 }

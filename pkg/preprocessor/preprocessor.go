@@ -5,13 +5,12 @@ import (
 )
 
 var COMMENT_CHAR = ";"
-var STRING_CHARS = map[string]bool {
+var STRING_CHARS = map[string]bool{
 	`"`: true,
 	`'`: true,
 }
 
-
-func RemoveComments (lines []string) {
+func RemoveComments(lines []string) {
 	var source string
 
 	// Go through each line in the source
@@ -22,7 +21,7 @@ func RemoveComments (lines []string) {
 		var strType string
 
 		// Iterate through every character in the line.
-		for charNum, _ = range line {
+		for charNum = range line {
 			char := string(line[charNum])
 
 			// This logic sets inString if we're in a string.
