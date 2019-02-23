@@ -5,9 +5,9 @@ import (
 )
 
 var SUPPORTED_COINS = map[string]bool{
-	"BSV": true,
-	"BTC": true,
-	"BCH": true,
+	//"BSV": true,
+	//"BTC": true,
+	//"BCH": true,
 	"ALL": true,
 }
 
@@ -36,12 +36,17 @@ func (intp *Interpreter) ExecStack (stack [][]byte, script []byte) (error, bool)
 }
 
 func (intp *Interpreter) Exec(script []byte) (error, bool) {
-
+	// Put in some validation steps for different coin types
 	for {
 		// Pop out the first command
 		command, script := script[0], script[1:]
 		
 		// Attempt to execute the command!
-		OP_FUNCS[command](intp,&script, command, &intp.Stack)
+		OP_FUNCS[command](intp, &script, command)
 	}
+}
+
+func (intp *Interpreter) pushFrame(script []byte) error {
+	// Probably verify the stack element
+	intp.Stack = append(intp.Stack, script)
 }

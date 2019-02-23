@@ -1,4 +1,6 @@
 package script
+
+// Taken from bchd/btcd
 const (
 	OP_0                   = 0x00 // 0
 	OP_FALSE               = 0x00 // 0 - AKA OP_0
