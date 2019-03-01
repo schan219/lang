@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -16,6 +17,13 @@ type TestVal struct {
 	ValInt int32
 }
 
+// Only useful for testing function declarations with a string as the body.
+type TestFnVal struct {
+	Name string
+	Args []string
+	Body string
+}
+
 func TestMainPrimitives(t *testing.T) {
 	// Build the assertor and the tokenizer
 	tokenizer, err := participle.Build(&parser.Program{})
@@ -29,23 +37,23 @@ func TestMainPrimitives(t *testing.T) {
 	// Each program is in the form
 	// @program:<@field,@value>
 	programs := map[string]TestVal{
-		"(main () true)": {
+		`(main () true)`: {
 			Field:  "Atom",
 			ValStr: "true",
 		},
-		"(main () b101101)": {
+		`(main () b101101)`: {
 			Field:  "Atom",
 			ValStr: "b101101",
 		},
-		"(main () 1)": {
+		`(main () 1)`: {
 			Field:  "Int",
 			ValInt: 1,
 		},
-		"(main () 3)": {
+		`(main () 3)`: {
 			Field:  "Int",
 			ValInt: 3,
 		},
-		"(main () 1000033)": {
+		`(main () 1000033)`: {
 			Field:  "Int",
 			ValInt: 1000033,
 		},
@@ -53,9 +61,9 @@ func TestMainPrimitives(t *testing.T) {
 			Field:  "Str",
 			ValStr: "1",
 		},
-		`(main () "JOE_IS_COOL")`: {
+		`(main () "JOE_IS_CoOL!!1")`: {
 			Field:  "Str",
-			ValStr: "JOE_IS_COOL",
+			ValStr: "JOE_IS_CoOL!!1",
 		},
 	}
 
@@ -72,10 +80,10 @@ func TestMainPrimitives(t *testing.T) {
 
 		// We must treat ints different to strings
 		if parsedOutput == "<int32 Value>" {
-			intOuput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
+			intOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
 			assert.Equalf(
 				output.ValInt,
-				int32(intOuput), // This conversion is because reflect outputs to 64 bit ints
+				int32(intOutput), // This conversion is because reflect outputs to 64 bit ints
 				"Hmm, we failed the int output, for: %s", sourceCode,
 			)
 		} else {
@@ -87,44 +95,52 @@ func TestMainPrimitives(t *testing.T) {
 	}
 }
 
-/** I will refactor these later -- Joe
-
-func TestFunctionDecl(t *testing.T) {
+func TestFnDecl(t *testing.T) {
+	// Build the assertor and the tokenizer
 	tokenizer, err := participle.Build(&parser.Program{})
+	assert := assert.New(t)
 
 	if err != nil {
 		panic(err)
 	}
 
-	root := &parser.Program{}
+	// Holds in the values for later
+	// Each program is in the form
+	// @program:<@code,@fields>
+	programs := make(map[string]TestFnVal)
 
-	str := `(defun test (a)
-				(if (= a 0)
-					true
-					false))`
+	code1 := `(defun test (a b) "abc")`
 
-	tokenizer.ParseString(str, root)
+	// Holds in the values for later
+	// Each field is in the form
+	// @field:<@name,@value>
+	// Tests the different fields of only one program.
+	programs[code1] = TestFnVal{Name: "test", Args: []string{"a", "b"}, Body: "abc"}
 
-	v := root.DefOrMain.Definition.FunctionDecl
+	fmt.Println(programs)
 
-	if v.Name != "test" {
-		t.Error("Expected \"test\", got ", v.Name)
-	}
-
-	if len(v.Args) != 1 {
-		t.Error("Expected \"1\", got ", len(v.Args))
-	}
-
-	if v.Args[0].Name != "a" {
-		t.Error("Expected \"a\", got ", v.Args[0].Name)
-	}
-
-	if v.Body.Function.Name != "if" {
-		t.Error("Expected \"if\" got ", v.Body.Function.Name)
+	for sourceCode, output := range programs {
+		root := &parser.Program{}
+		tokenizer.ParseString(sourceCode, root)
+		// Test the non nilness of FnDecl.
+		assert.NotNilf(root.Definitions[0].FnDecl, "Hmm, FnDecl is nil for `%s`", sourceCode)
+		// Test function name
+		parsedOutput := reflect.ValueOf(*root.Definitions[0].FnDecl).FieldByName("Name").String()
+		assert.Equalf(output.Name, parsedOutput, "Hmm, we failed the function declaration name, for: %s", sourceCode)
+		// Test length of args.
+		assert.Equal(len(root.Definitions[0].FnDecl.Args), len(output.Args), "Hmm, the number of args for FnDecl is incorrect.`%s`", sourceCode)
+		// Test Args
+		for i, value := range output.Args {
+			parsedOutput = reflect.ValueOf(*root.Definitions[0].FnDecl.Args[i]).FieldByName("Atom").String()
+			assert.Equalf(value, parsedOutput, "Hmm, we failed the function declaration args, for: %s", sourceCode)
+		}
+		// Test Body
+		parsedOutput = reflect.ValueOf(*root.Definitions[0].FnDecl.Body).FieldByName("Str").String()
+		assert.Equalf(output.Body, parsedOutput, "Hmm, we failed the function declaration body, for: %s", sourceCode)
 	}
 }
 
-func TestFunction(t *testing.T) {
+/*func TestFnCall(t *testing.T) {
 	tokenizer, err := participle.Build(&parser.Program{})
 
 	if err != nil {
@@ -160,5 +176,4 @@ func TestFunction(t *testing.T) {
 	if v.Body.Function.Args[2].Num != 3 {
 		t.Error("Expected \"3\", got ", v.Body.Function.Args[2].Num)
 	}
-}
-*/
+}*/
