@@ -28,6 +28,11 @@ type TestFnCallVal struct {
 	Args []TestVal
 }
 
+type TestVarDeclVal struct {
+	Name  string
+	Value string
+}
+
 func TestMainPrimitives(t *testing.T) {
 	// Build the assertor and the tokenizer
 	tokenizer, err := participle.Build(&parser.Program{})
@@ -78,13 +83,13 @@ func TestMainPrimitives(t *testing.T) {
 		tokenizer.ParseString(sourceCode, root)
 
 		// Test the non nillness of main.
-		assert.NotNilf(root.Main, "Hmm, main is nil for `%s`", sourceCode)
+		assert.NotNilf(root.DefOrMain[0].Main, "Hmm, main is nil for `%s`", sourceCode)
 		// Test if parsed value is expected.
-		parsedOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).String()
+		parsedOutput := reflect.ValueOf(*root.DefOrMain[0].Main.Body).FieldByName(fieldName).String()
 
 		// We must treat ints different to strings
 		if parsedOutput == "<int32 Value>" {
-			intOutput := reflect.ValueOf(*root.Main.Body).FieldByName(fieldName).Int()
+			intOutput := reflect.ValueOf(*root.DefOrMain[0].Main.Body).FieldByName(fieldName).Int()
 			assert.Equalf(
 				output.ValInt,
 				int32(intOutput), // This conversion is because reflect outputs to 64 bit ints
@@ -123,19 +128,19 @@ func TestFnDecl(t *testing.T) {
 		root := &parser.Program{}
 		tokenizer.ParseString(sourceCode, root)
 		// Test the non nilness of FnDecl.
-		assert.NotNilf(root.Definitions[0].FnDecl, "Hmm, FnDecl is nil for `%s`", sourceCode)
+		assert.NotNilf(root.DefOrMain[0].FnDecl, "Hmm, FnDecl is nil for `%s`", sourceCode)
 		// Test function name
-		parsedOutput := reflect.ValueOf(*root.Definitions[0].FnDecl).FieldByName("Name").String()
+		parsedOutput := reflect.ValueOf(*root.DefOrMain[0].FnDecl).FieldByName("Name").String()
 		assert.Equalf(output.Name, parsedOutput, "Hmm, we failed the function declaration name, for: %s", sourceCode)
 		// Test length of args.
-		assert.Equal(len(root.Definitions[0].FnDecl.Args), len(output.Args), "Hmm, the number of args for FnDecl is incorrect.`%s`", sourceCode)
+		assert.Equal(len(root.DefOrMain[0].FnDecl.Args), len(output.Args), "Hmm, the number of args for FnDecl is incorrect.`%s`", sourceCode)
 		// Test Args
 		for i, value := range output.Args {
-			parsedOutput = reflect.ValueOf(*root.Definitions[0].FnDecl.Args[i]).FieldByName("Atom").String()
+			parsedOutput = reflect.ValueOf(*root.DefOrMain[0].FnDecl.Args[i]).FieldByName("Atom").String()
 			assert.Equalf(value, parsedOutput, "Hmm, we failed the function declaration args, for: %s", sourceCode)
 		}
 		// Test Body
-		parsedOutput = reflect.ValueOf(*root.Definitions[0].FnDecl.Body).FieldByName("Str").String()
+		parsedOutput = reflect.ValueOf(*root.DefOrMain[0].FnDecl.Body).FieldByName("Str").String()
 		assert.Equalf(output.Body, parsedOutput, "Hmm, we failed the function declaration body, for: %s", sourceCode)
 	}
 }
@@ -176,20 +181,20 @@ func TestFnCall(t *testing.T) {
 		root := &parser.Program{}
 		tokenizer.ParseString(sourceCode, root)
 		// Test the non nilness of FnCall.
-		assert.NotNilf(root.Main.Body.Fn, "Hmm, FnCall is nil for `%s`", sourceCode)
+		assert.NotNilf(root.DefOrMain[0].Main.Body.Fn, "Hmm, FnCall is nil for `%s`", sourceCode)
 		// Test function name
-		parsedOutput := reflect.ValueOf(*root.Main.Body.Fn).FieldByName("Name").String()
+		parsedOutput := reflect.ValueOf(*root.DefOrMain[0].Main.Body.Fn).FieldByName("Name").String()
 		assert.Equalf(output.Name, parsedOutput, "Hmm, we failed the function call name, for: %s", sourceCode)
 		// Test length of args.
-		assert.Equal(len(root.Main.Body.Fn.Args), len(output.Args), "Hmm, the number of args for FnCall is incorrect.`%s`", sourceCode)
+		assert.Equal(len(root.DefOrMain[0].Main.Body.Fn.Args), len(output.Args), "Hmm, the number of args for FnCall is incorrect.`%s`", sourceCode)
 		// Test Args
 		for i, value := range output.Args {
 			// Test if parsed value is expected.
-			parsedOutput = reflect.ValueOf(*root.Main.Body.Fn.Args[i]).FieldByName("Str").String()
+			parsedOutput = reflect.ValueOf(*root.DefOrMain[0].Main.Body.Fn.Args[i]).FieldByName("Str").String()
 
 			// We must treat ints different to strings
 			if parsedOutput == "<int32 Value>" {
-				intOutput := reflect.ValueOf(*root.Main.Body.Fn.Args[i]).FieldByName("Int").Int()
+				intOutput := reflect.ValueOf(*root.DefOrMain[0].Main.Body.Fn.Args[i]).FieldByName("Int").Int()
 				assert.Equalf(
 					value.ValInt, // This conversion is because reflect outputs to 64 bit ints
 					int32(intOutput),
@@ -202,5 +207,38 @@ func TestFnCall(t *testing.T) {
 				)
 			}
 		}
+	}
+}
+
+func TestVarDecl(t *testing.T) {
+	// Build the assertor and the tokenizer
+	tokenizer, err := participle.Build(&parser.Program{})
+	assert := assert.New(t)
+
+	if err != nil {
+		panic(err)
+	}
+
+	// Holds in the values for later
+	// Each program is in the form
+	// @program:<@Name,@Value>
+	programs := map[string]TestVarDeclVal{
+		`(defvar ALICE_ADDR "1LCZTUkMKSYN8oKWhh8oqTErEhTENpnXY6")`: {
+			Name:  "ALICE_ADDR",
+			Value: "1LCZTUkMKSYN8oKWhh8oqTErEhTENpnXY6",
+		},
+	}
+
+	for sourceCode, output := range programs {
+		root := &parser.Program{}
+		tokenizer.ParseString(sourceCode, root)
+		// Test the non nilness of VarDecl.
+		assert.NotNilf(root.DefOrMain[0].VarDecl, "Hmm, VarDecl is nil for `%s`", sourceCode)
+		// Test variable name
+		parsedOutput := reflect.ValueOf(*root.DefOrMain[0].VarDecl).FieldByName("Name").String()
+		assert.Equalf(output.Name, parsedOutput, "Hmm, we failed the variable declaration name, for: %s", sourceCode)
+		// Test variable value
+		parsedOutput = reflect.ValueOf(*root.DefOrMain[0].VarDecl.Value).FieldByName("Str").String()
+		assert.Equalf(output.Value, parsedOutput, "Hmm, we failed the variable declaration value, for: %s", sourceCode)
 	}
 }
