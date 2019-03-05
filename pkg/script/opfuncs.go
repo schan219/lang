@@ -39,7 +39,63 @@ func init () {
 		OP_FUNCS[OP_1 + value - 1] = pushData(-1, value); 
 	}
 
+	OP_FUNCS[OP_DUP] = func (stack *Stack, command int) {
+		// b -- b b
+		temp1 := stack.Pop();
+		temp2 := temp1.Copy();
 
+		stack.Push(temp1);
+		stack.Push(temp2);		
+	}
+
+	OP_FUNCS[OP_2DUP] = func (stack *Stack, command int) {
+		// a b -- a b a b
+		b := stack.Pop();
+		a := stack.Pop();
+
+		stack.Push(a.Copy());
+		stack.Push(b.Copy());
+		stack.Push(a.Copy());
+		stack.Push(b.Copy());
+	}
+
+	OP_FUNCS[OP_3DUP] = func (stack *Stack, command int) {
+		// a b c -- a b c a b c
+		b := stack.Pop();
+		a := stack.Pop();
+		c := stack.Pop();
+
+		stack.Push(a.Copy());
+		stack.Push(b.Copy());
+		stack.Push(c.Copy());
+		stack.Push(a.Copy());
+		stack.Push(b.Copy());
+		stack.Push(c.Copy());
+	}
+
+	OP_FUNCS[OP_3DUP] = func (stack *Stack, command int) {
+		// a b -- a a b b
+		temp1 := stack.Pop();
+		temp2 := temp1.Copy();
+		temp3 := stack.Pop();
+		temp4 := temp1.Copy();
+		temp5 := stack.Pop();
+		temp6 := temp1.Copy();
+
+		stack.Push(temp3);
+		stack.Push(temp4);
+		stack.Push(temp1);
+		stack.Push(temp2);
+	}
+
+	OP_FUNCS[OP_CAT] = func (stack *Stack, command int) {
+		// Not inlined to prevent ambiguity.
+		temp1 := stack.Pop();
+		temp2 := stack.Pop();
+		temp3 := append(temp2, temp1...);
+
+		stack.Push(temp3);
+	}
 
 	OP_FUNCS[OP_PICK] = func (stack *Stack, command int) {
 		//Pop out the last number.
@@ -50,9 +106,18 @@ func init () {
 			panic("OP_PICK is trying to pick out of range!");
 		}
 
-		if command == OP_ROLL {
+		// pop to the top. conversion will throw.
+		value := topFrame.Int();
+		// Data we picked out.
+		data := (*stack)[stack.Len() - value];
 
+		if command == OP_ROLL {
+			// If we ROLL, then we remove too.
+			stack.Splice(value, -1, []Frame{})
 		}
+
+		// Push our data to the top of the stack
+		stack.Push(data);
 	}
 	// OP_PICK / OP_ROLL are super similar.
 	OP_FUNCS[OP_ROLL] = OP_FUNCS[OP_PICK];

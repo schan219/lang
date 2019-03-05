@@ -24,6 +24,17 @@ func (s *Stack) Push(a Frame) {
 	s = &temp;
 }
 
+func (s *Stack) Splice(n int, deleteCount int, b []Frame) {
+	
+}
+
+func (s *Frame) Copy() Frame {
+	temp := make([]byte, len((*s)));
+	copy(temp,*s);
+
+	return temp;
+}
+
 func (f *Frame) Int() int {
 	return 0;
 }
