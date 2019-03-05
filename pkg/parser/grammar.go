@@ -1,38 +1,38 @@
 package parser
 
 type Program struct {
-	Definitions []*Definition `@@`
-	Main        *Main         `| @@`
+	DefOrMain []*DefOrMain `"(" @@ ")"`
 }
 
-type Definition struct {
-	FnDecl  *FnDecl  `@@`
-	VarDecl *VarDecl `@@`
+type DefOrMain struct {
+	FnDecl  *FnDecl  `"defun" @@`
+	VarDecl *VarDecl `| "defvar" @@`
+	Main    *Main    `| "main" @@`
 }
 
 type Main struct {
-	Args []*Expr `"(" "main" "(" (@@)* ")" `
-	Body *Expr   `@@ ")"`
+	Args []*Expr `"(" (@@)* ")"`
+	Body *Expr   `@@`
 }
 
 type FnDecl struct {
-	Name string  `"(" "defun" @Ident `
-	Args []*Expr `"(" (@@)* ")" `
-	Body *Expr   `@@ ")"`
+	Name string  `@Ident`
+	Args []*Expr `"(" (@@)* ")"`
+	Body *Expr   `@@`
 }
 
 type VarDecl struct {
-	Name  string `"(" "defvar" @Ident `
-	Value *Expr  `@@ ")"`
+	Name  string `@Ident`
+	Value *Expr  `@@`
 }
 
 type FnCall struct {
-	Name string  `"(" @Ident`
-	Args []*Expr `(@@)* ")"`
+	Name string  `@Ident`
+	Args []*Expr `(@@)*`
 }
 
 type Expr struct {
-	Fn   *FnCall `@@`
+	Fn   *FnCall `"(" @@ ")"`
 	Atom string  `| @Ident`
 	Str  string  `| @String`
 	Int  int32   `| @Int`
