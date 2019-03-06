@@ -38,3 +38,14 @@ func (s *Frame) Copy() Frame {
 func (f *Frame) Int() int {
 	return 0;
 }
+
+func (f *Frame) IsZero() bool {
+	// Check if each byte in frame is 0.
+	for _, byteInd := range *f {
+		if byteInd != 0 {
+			return false;
+		}
+	}
+
+	return true;
+}

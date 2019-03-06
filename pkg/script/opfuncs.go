@@ -27,7 +27,14 @@ func pushData (width int, value int) interface{} {
 	}
 }
 
-func init () {
+// Singleton pattern ish, should be refactored in the future.
+var fnInit = false;
+func InitFuncs () {
+	if fnInit {
+		return;
+	}
+	fnInit = true;
+	
 	// we go from OP_DATA_1, to OP_DATA_75
 	for opcode := OP_DATA_1; opcode <= OP_DATA_75; opcode++ {
 		OP_FUNCS[opcode] = pushData(opcode, -1);
