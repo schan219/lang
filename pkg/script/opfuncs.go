@@ -73,21 +73,6 @@ func init () {
 		stack.Push(c.Copy());
 	}
 
-	OP_FUNCS[OP_3DUP] = func (stack *Stack, command int) {
-		// a b -- a a b b
-		temp1 := stack.Pop();
-		temp2 := temp1.Copy();
-		temp3 := stack.Pop();
-		temp4 := temp1.Copy();
-		temp5 := stack.Pop();
-		temp6 := temp1.Copy();
-
-		stack.Push(temp3);
-		stack.Push(temp4);
-		stack.Push(temp1);
-		stack.Push(temp2);
-	}
-
 	OP_FUNCS[OP_CAT] = func (stack *Stack, command int) {
 		// Not inlined to prevent ambiguity.
 		temp1 := stack.Pop();
