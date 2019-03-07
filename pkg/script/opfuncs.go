@@ -1,10 +1,5 @@
 package script
 
-import (
-	"errors"
-	"math/big"
-)
-
 var OP_FUNCS = map[int]interface{} {
 	OP_0:         pushData(-1,1),
 
@@ -17,11 +12,11 @@ var OP_FUNCS = map[int]interface{} {
 func pushData (width int, value int) interface{} {
 	// We just return the next n 
 	if (value == -1) {
-		return func () {
+		return func (stack *Stack, command int, script []byte) {
 			
 		}
 	} else {
-		return func () {
+		return func (stack *Stack, command int, script []byte) {
 
 		}
 	}
@@ -46,7 +41,7 @@ func InitFuncs () {
 		OP_FUNCS[OP_1 + value - 1] = pushData(-1, value); 
 	}
 
-	OP_FUNCS[OP_DUP] = func (stack *Stack, command int) {
+	OP_FUNCS[OP_DUP] = func (stack *Stack, command int, script []byte) {
 		// b -- b b
 		temp1 := stack.Pop();
 		temp2 := temp1.Copy();
@@ -55,7 +50,7 @@ func InitFuncs () {
 		stack.Push(temp2);		
 	}
 
-	OP_FUNCS[OP_2DUP] = func (stack *Stack, command int) {
+	OP_FUNCS[OP_2DUP] = func (stack *Stack, command int, script []byte) {
 		// a b -- a b a b
 		b := stack.Pop();
 		a := stack.Pop();
@@ -66,7 +61,7 @@ func InitFuncs () {
 		stack.Push(b.Copy());
 	}
 
-	OP_FUNCS[OP_3DUP] = func (stack *Stack, command int) {
+	OP_FUNCS[OP_3DUP] = func (stack *Stack, command int, script []byte) {
 		// a b c -- a b c a b c
 		b := stack.Pop();
 		a := stack.Pop();
@@ -80,7 +75,7 @@ func InitFuncs () {
 		stack.Push(c.Copy());
 	}
 
-	OP_FUNCS[OP_CAT] = func (stack *Stack, command int) {
+	OP_FUNCS[OP_CAT] = func (stack *Stack, command int, script []byte) {
 		// Not inlined to prevent ambiguity.
 		temp1 := stack.Pop();
 		temp2 := stack.Pop();
@@ -89,7 +84,7 @@ func InitFuncs () {
 		stack.Push(temp3);
 	}
 
-	OP_FUNCS[OP_PICK] = func (stack *Stack, command int) {
+	OP_FUNCS[OP_PICK] = func (stack *Stack, command int, script []byte) {
 		//Pop out the last number.
 		topFrame :=stack.Pop();
 		n := topFrame.Int();

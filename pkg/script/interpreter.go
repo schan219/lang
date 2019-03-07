@@ -27,7 +27,7 @@ func NewInterpreter(coinType string) (error, *Interpreter) {
 	// Initia 
 	InitFuncs();
 
-	return nil, &Interpreter{Coin: coinType}
+	return nil, &Interpreter{Stack: NewStack(), Coin: coinType}
 }
 
 func (intp *Interpreter) Exec(script []byte) (error, bool) {
@@ -37,20 +37,22 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 		if len(script) == 0 {
 			break;
 		}
-
+		var command byte;
 		// Pop out the first command
-		command, script := script[0], script[1:]
+		command, script = script[0], script[1:];
 		
 		// Attempt to execute the command!
 		fn, exists := OP_FUNCS[int(command)]
 
 		// Throw if weird opcode.
 		if !exists {
-			panic(fmt.Sprintf("Unknown OpCode encountered: %x", command));
+			return errors.New(
+				fmt.Sprintf("Unknown OpCode encountered: %x", command),
+			), false;
 		}
 
 		// Execute the function..
-		fn.(func(*Stack,int))(intp.Stack, int(command));
+		fn.(func(*Stack, int, []byte))(intp.Stack, int(command), script);
 	}
 	
 	if intp.Invalid {
