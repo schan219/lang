@@ -52,7 +52,12 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 		}
 
 		// Execute the function..
-		fn.(func(*Stack, int, []byte))(intp.Stack, int(command), script);
+		var err error;
+		script, err = fn.(func(*Stack, int, []byte) ([]byte, error))(intp.Stack, int(command), script);
+
+		if err != nil {
+			return err, false;
+		}
 	}
 	
 	if intp.Invalid {
