@@ -53,7 +53,7 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 
 		// Execute the function..
 		var err error;
-		script, err = fn.(func(*Stack, int, []byte) ([]byte, error))(intp.Stack, int(command), script);
+		script, err = fn.(func(**Stack, int, []byte) ([]byte, error))(&intp.Stack, int(command), script);
 
 		if err != nil {
 			return err, false;
@@ -69,7 +69,7 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 		p := intp.Stack.Pop();
 		return nil, p.IsZero();
 	} else {
-		return errors.New("Stack is empty"), false;
+		return nil, false;
 	}
 
 }

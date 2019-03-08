@@ -13,15 +13,13 @@ func (s *Stack) Len() int {
 
 func (s *Stack) Pop() Frame {
 	x := (*s)[s.Len()-1];
-	temp := (*s)[:s.Len()-1];
-	s = &temp;
+	*s = (*s)[:s.Len()-1];
 
 	return x;
 }
 
 func (s *Stack) Push(a Frame) {
-	temp := append((*s), a);
-	s = &temp;
+	*s = append(*s, a);
 }
 
 func (s *Stack) Splice(n int, deleteCount int, b []Frame) {

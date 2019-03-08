@@ -1,7 +1,7 @@
 package script
 
 import (
-	_"fmt"
+	"fmt"
 	"testing"
 
 	"lang/pkg/script"
@@ -12,8 +12,9 @@ type Frame script.Frame;
 type Stack script.Stack;
 
 type TestVal struct {
-	FinalStack   *script.Stack
+	FinalStack   [][]byte
 	IsError      bool
+	Truthy		 bool
 }
 
 func TestMainPrimitives (t *testing.T) {
@@ -26,21 +27,27 @@ func TestMainPrimitives (t *testing.T) {
 
 	programs := map[string]TestVal {
 		string([]byte{script.OP_0}): TestVal {
-			FinalStack: script.NewStack(),
+			FinalStack: [][]byte{[]byte{}},
 			IsError: false,
+			Truthy: false,
 		},
-		string([]byte{script.OP_1,script.OP_2,}): TestVal {
-			FinalStack: script.NewStack(),
+		string([]byte{script.OP_DATA_1,script.OP_DATA_2}): TestVal {
+			FinalStack: [][]byte{[]byte{script.OP_DATA_2}},
 			IsError: false,
+			Truthy: true,
 		},
-		string([]byte{script.OP_5,script.OP_2,script.OP_3,script.OP_5,script.OP_7}): TestVal {
-			FinalStack: script.NewStack(),
+		string([]byte{script.OP_DATA_5,script.OP_DATA_2,script.OP_DATA_3,script.OP_DATA_5,script.OP_DATA_7,script.OP_DATA_6}): TestVal {
+			FinalStack: [][]byte{[]byte{
+				script.OP_DATA_2,script.OP_DATA_3,script.OP_DATA_5,script.OP_DATA_7,script.OP_DATA_6,
+			}},
 			IsError: false,
+			Truthy: true,
 		},
 	}
 
 	for sourceCode, output := range programs {
-		err, valid := intp.Exec([]byte(sourceCode));
+		err, truthy := intp.Exec([]byte(sourceCode));
+		fmt.Printf("%+v\n", intp.Stack);
 
 		if output.IsError {
 			assert.NotNil(err);
@@ -48,8 +55,7 @@ func TestMainPrimitives (t *testing.T) {
 			assert.Nil(err);
 		}
 
-		if output.FinalStack != nil {
-			assert.True(valid);
-		}
+		assert.Equal(intp.Stack, output.FinalStack);
+		assert.Equal(truthy, output.Truthy);
 	}
 }
