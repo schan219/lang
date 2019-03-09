@@ -7,8 +7,8 @@ func (s Stack) Len() int {
 	return len(s)
 }
 
-func (s Stack) Push(v int) Stack {
-    return append(s, v)
+func (s Stack) Push(v Frame) Stack {
+    return append(s, Frame)
 }
 
 func (s Stack) Pop() (Stack, int) {
@@ -38,7 +38,7 @@ func (f Frame) Int() int {
 		total |= (f[i] << (i * 8))
 	}
 
-	
+	// TODO: Add support for negative integers.s
 
 	return total
 }

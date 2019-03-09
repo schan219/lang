@@ -14,38 +14,32 @@ var OP_FUNCS = map[int]interface{} {
 
 
 func pushDataWidth (width int) interface{} {
-	return func (stack *Stack, cmd int, script []byte) (*Stack, []byte, error) {
+	return func (stack Stack, cmd int, script []byte) (Stack, []byte, error) {
+		var total int64; 
+		var frameLen []byte;
+
 		// We want to push the next n values.
 		// The script must have that many bytes left.
 		if len(script) < width {
 			return nil, nil, errors.New("Not enough bytes left for pushdata size..");
 		}
 
-		var total int64; 
-		var frameLen []byte;
 
-		// Create the varint as a bytearray based on first byte
-		switch width {
-		case OP_PUSHDATA1:
-			frameLen, script = script[0:2], script[2:];
-			total = int64(binary.LittleEndian.Uint16(frameLen));
-		case OP_PUSHDATA2:
-			frameLen, script = script[0:4], script[4:];
-			total = int64(binary.LittleEndian.Uint32(frameLen));
-		case OP_PUSHDATA4:
-			frameLen, script = script[0:8], script[8:];
-			total = int64(binary.LittleEndian.Uint64(frameLen));
-		default:
-			return nil, nil, errors.New("Invalid pushdata operation!");
+		// This the number of bytes we need to push in.
+		var bytesLen = (cmd - OP_PUSHDATA1) + 1;
+		// Little endian ftw!
+		for i := 0; i < bytesLen; i++ {
+			total += int64(script[0]) << uint(i*8);
+			script = script[1:];
 		}
 
 		// Validate.
 		if total > int64(len(script)) {
-			return nil, nil, errors.New("Not enough data on script for pushdata");
+			panic("Not enough data on script for pushdata");
 		}
 
 		// Slice and push
-		stack = stack.Push(script[0:total])
+		stack = stack.Push(Frame(script[0:total]))
 		script = script[total:]
 
 		return stack, script, nil;
@@ -55,7 +49,7 @@ func pushDataWidth (width int) interface{} {
 func pushDataLen(length int) interface{} {
 	return func (stack *Stack, cmd int, script []byte) (*Stack, []byte, error) {
 		if length > len(script) {
-			return nil, nil, errors.New("Not enough data on script for data push");
+			panic("Not enough bytes ")
 		}
 
 		var frame []byte;
