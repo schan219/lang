@@ -8,18 +8,17 @@ func NewStack ()*Stack {
 }
 
 func (s *Stack) Len() int {
-	return len((*s));
+	return len(*s);
 }
 
-func (s *Stack) Pop() Frame {
-	x := (*s)[s.Len()-1];
+func (s *Stack) Pop() (Frame, *Stack) {
 	*s = (*s)[:s.Len()-1];
-
-	return x;
+    return  (*s)[s.Len()-1], s;
 }
 
-func (s *Stack) Push(a Frame) {
-	*s = append(*s, a);
+func (s *Stack) Push(a Frame) (*Stack) {
+	*s = append([]Frame(*s), a);
+	return s;
 }
 
 func (s *Stack) Splice(n int, deleteCount int, b []Frame) {

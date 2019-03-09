@@ -53,7 +53,7 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 
 		// Execute the function..
 		var err error;
-		script, err = fn.(func(**Stack, int, []byte) ([]byte, error))(&intp.Stack, int(command), script);
+		intp.Stack, script, err = fn.(func(*Stack, int, []byte) (*Stack, []byte, error))(intp.Stack, int(command), script);
 
 		if err != nil {
 			return err, false;
@@ -66,7 +66,8 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 
 	// If the top of the stack is a valid number return true, otherwise false.
 	if intp.Stack.Len() > 0 {
-		p := intp.Stack.Pop();
+		var p Frame;
+		p, intp.Stack = intp.Stack.Pop();
 		return nil, p.IsZero();
 	} else {
 		return nil, false;

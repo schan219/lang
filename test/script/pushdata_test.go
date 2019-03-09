@@ -12,7 +12,7 @@ type Frame script.Frame;
 type Stack script.Stack;
 
 type TestVal struct {
-	FinalStack   [][]byte
+	FinalStack	 script.Stack
 	IsError      bool
 	Truthy		 bool
 }
@@ -27,19 +27,24 @@ func TestMainPrimitives (t *testing.T) {
 
 	programs := map[string]TestVal {
 		string([]byte{script.OP_0}): TestVal {
-			FinalStack: [][]byte{[]byte{}},
+			FinalStack: script.Stack(
+				[]script.Frame{script.Frame([]byte{})},
+			),
 			IsError: false,
 			Truthy: false,
 		},
 		string([]byte{script.OP_DATA_1,script.OP_DATA_2}): TestVal {
-			FinalStack: [][]byte{[]byte{script.OP_DATA_2}},
+			FinalStack: script.Stack(
+				[]script.Frame{script.Frame([]byte{script.OP_DATA_2})},
+			),
 			IsError: false,
 			Truthy: true,
 		},
 		string([]byte{script.OP_DATA_5,script.OP_DATA_2,script.OP_DATA_3,script.OP_DATA_5,script.OP_DATA_7,script.OP_DATA_6}): TestVal {
-			FinalStack: [][]byte{[]byte{
-				script.OP_DATA_2,script.OP_DATA_3,script.OP_DATA_5,script.OP_DATA_7,script.OP_DATA_6,
-			}},
+			FinalStack:  script.Stack(
+				[]script.Frame{script.Frame([]byte{
+					script.OP_DATA_2,script.OP_DATA_3,script.OP_DATA_5,script.OP_DATA_7,script.OP_DATA_6,
+				})}),
 			IsError: false,
 			Truthy: true,
 		},
@@ -55,7 +60,7 @@ func TestMainPrimitives (t *testing.T) {
 			assert.Nil(err);
 		}
 
-		assert.Equal(intp.Stack, output.FinalStack);
+		assert.Equal(output.FinalStack, intp.Stack);
 		assert.Equal(truthy, output.Truthy);
 	}
 }
