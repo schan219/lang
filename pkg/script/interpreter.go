@@ -33,6 +33,7 @@ func NewInterpreter(coinType string) (error, *Interpreter) {
 }
 
 func (intp *Interpreter) Exec(script []byte) (error, bool) {
+	intp.Stack = Stack([]Frame{})
 	// Put in some validation steps for different coin types
 	for {
 		// Finished reading the script!
@@ -70,7 +71,7 @@ func (intp *Interpreter) Exec(script []byte) (error, bool) {
 	if intp.Stack.Len() > 0 {
 		var p Frame
 		_, p = intp.Stack.Pop()
-		return nil, p.IsZero()
+		return nil, !p.IsZero()
 	} else {
 		return nil, false
 	}

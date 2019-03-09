@@ -52,7 +52,7 @@ func pushDataLen(length int) interface{} {
 		}
 
 		var frame []byte
-		frame, script = script[0:len(script)], script[len(script):]
+		frame, script = script[0:length], script[length:]
 		stack = stack.Push(Frame(frame))
 
 		return stack, script, nil
@@ -134,7 +134,7 @@ func InitFuncs () {
 
 		return stack, script, nil
 	}
-
+	/**
 	OP_FUNCS[OP_PICK] = func (stack Stack, cmd int, script []byte) (Stack, []byte, error) {
 		//Pop out the last number.
 		stack, topFrame := stack.Pop()
@@ -160,4 +160,5 @@ func InitFuncs () {
 	}
 	// OP_PICK / OP_ROLL are super similar.
 	OP_FUNCS[OP_ROLL] = OP_FUNCS[OP_PICK]
+	*/
 }
