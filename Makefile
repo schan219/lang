@@ -1,2 +1,2 @@
 all:
-	go test ./test/parser
+	go test ./test/script

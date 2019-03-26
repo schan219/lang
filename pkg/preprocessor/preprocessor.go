@@ -34,7 +34,7 @@ func RemoveComments(lines []string) {
 
 			// Since we've detected a comment declaration outside a string
 			// lets cut it.
-			if !inString && (char == COMMENT_CHAR) {
+			if !inString && (char == COMMENT_START_CHAR) {
 				break
 			}
 		}
