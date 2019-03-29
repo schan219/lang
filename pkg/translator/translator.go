@@ -1,13 +1,22 @@
 package translator
 
 import (
-	"lang/pkg/"
+	"fmt"
+
 	"lang/pkg/parser"
 	"lang/pkg/script"
 )
 
-func Translate(node *parser.Expr) []code {
 
+var CONDITIONALS = []string{ "<", ">", "=", "<=", "=>", "!=" };
+
+func Translate(node *parser.Expr) []byte {
+	switch true {
+	case node.Atom != "":
+	case node.Str != "":
+	case node.Int != 0:
+	}
+	return []byte{};
 }
 
 func translateCond(code []byte, node *parser.FnCall) []byte {
@@ -20,7 +29,7 @@ func translateCond(code []byte, node *parser.FnCall) []byte {
 		))
 	}
 
-	var baseOp int := 0;
+	var baseOp int = 0;
 
 	switch node.Name {
 	case ">":
