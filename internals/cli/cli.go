@@ -11,13 +11,12 @@ import (
 )
 
 type InitConfig struct {
-	InputFile   		*os.File
+	InputFile   		string
 	OutputPath  		string
-	Contents        	[]byte
 }
 
 func Start() *InitConfig {
-	var conf *InitConfig
+	var conf *InitConfig = &InitConfig{}
 
 	getInputFile(conf)
 	getOutputPath(conf)
@@ -26,7 +25,6 @@ func Start() *InitConfig {
 }
 
 func getInputFile(conf *InitConfig) {
-	var fileName string
 	var prompt promptui.Prompt
 	var err error
 
@@ -34,7 +32,7 @@ func getInputFile(conf *InitConfig) {
 
 	for {
 		prompt = promptui.Prompt{Label: "Input File "}
-		fileName, err = prompt.Run()
+		conf.InputFile, err = prompt.Run()
 
 		// Skip opening if error
 		if err != nil {
@@ -42,7 +40,7 @@ func getInputFile(conf *InitConfig) {
 		}
 
 		// Try to open, to see if there is a file.
-		conf.InputFile, err = os.Open(fileName)
+		_, err = os.Open(conf.InputFile)
 
 		if err == nil {
 			break
@@ -54,7 +52,7 @@ func getInputFile(conf *InitConfig) {
 
 func getOutputPath(conf *InitConfig) {
 
-	prompt := promptui.Prompt{Label: "Output File Name"}
+	prompt := promptui.Prompt{Label: "Output File "}
 
 	outputFile, err := prompt.Run()
 	prompt = promptui.Prompt{IsConfirm: true}
