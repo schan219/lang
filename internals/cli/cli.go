@@ -42,7 +42,7 @@ func getInputFile(conf *InitConfig) {
 		}
 
 		// Try to open, to see if there is a file.
-	    conf.InputFile, err = os.Open(fileName)
+		conf.InputFile, err = os.Open(fileName)
 
 		if err == nil {
 			break
@@ -54,12 +54,14 @@ func getInputFile(conf *InitConfig) {
 
 func getOutputPath(conf *InitConfig) {
 
-	prompt = promptui.Prompt{Label: "Output File Name"}
+	prompt := promptui.Prompt{Label: "Output File Name"}
 
-	outputFile, err = prompt.Run()
+	outputFile, err := prompt.Run()
 	prompt = promptui.Prompt{IsConfirm: true}
 
 	if err != nil {
 		panic(fmt.Sprintf("Prompt failed %v\n", err))
 	}
+
+	conf.OutputPath = outputFile
 }

@@ -9,22 +9,19 @@ import (
 
 func main() {
 	// Grab the input from somewhere
-	conf = cli.Start()
+	cli.Start()
 
 	//
 	// We should manage dependencies here.
 	//
 
 	// Tokenize the result.
-	tokenizer, err := participle.Build(&parser.Program{})
+	_, err := participle.Build(&parser.Program{})
 	
 	if err != nil {
 		panic(fmt.Sprintf("Issue with building parser: %+v", err))
 	}
 
 	// Translate each token starting with the definitions.
-
-
 	// Clean up / Execute tests.
-	
 }
