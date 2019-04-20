@@ -9,7 +9,9 @@ import (
 
 func main() {
 	// Grab the input from somewhere
-	cli.Start()
+	conf := cli.Start()
+
+	fmt.Println(conf.Contents)
 
 	//
 	// We should manage dependencies here.

@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"io/ioutil"
 	_"strconv"
 	_"errors"
 	_"path/filepath"
@@ -12,6 +13,7 @@ import (
 
 type InitConfig struct {
 	InputFile   		string
+	Contents			[]byte
 	OutputPath  		string
 }
 
@@ -48,6 +50,14 @@ func getInputFile(conf *InitConfig) {
 		fmt.Println("File not found. Please enter a valid file")
 	}
 
+	// We must've found a valid file, so we read it in
+	file, _ := os.Open(conf.InputFile)
+	conf.Contents, err = ioutil.ReadAll(file)
+
+	// If there is an error, throw it
+	if err != nil {
+		panic(fmt.Sprintf("Failed reading file: %s", conf.InputFile))
+	}
 }
 
 func getOutputPath(conf *InitConfig) {
