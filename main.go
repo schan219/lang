@@ -1,8 +1,5 @@
 package main
 
-<<<<<<< HEAD
-func main () {
-=======
 import (
 	"fmt"
 	"lang/internals/cli"
@@ -26,7 +23,6 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("Issue with building parser: %+v", err))
 	}
->>>>>>> shade/1
 
 	// Translate each token starting with the definitions.
 	// Clean up / Execute tests.
