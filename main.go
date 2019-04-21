@@ -8,22 +8,25 @@ import (
 )
 
 func main() {
-	// Grab the input from somewhere
 	conf := cli.Start()
 
-	fmt.Println(conf.Contents)
-
-	//
-	// We should manage dependencies here.
-	//
+	// TODO: manage dependencies here.
 
 	// Tokenize the result.
-	_, err := participle.Build(&parser.Program{})
+	ASTBuilder, err := participle.Build(&parser.Program{})
 	
 	if err != nil {
 		panic(fmt.Sprintf("Issue with building parser: %+v", err))
 	}
 
+	program := parser.Program{}
+	err = ASTBuilder.ParseString(string(conf.Contents), &program)
+
+	if err != nil {
+		panic(fmt.Sprintf("Issue parsing the file... %+v", err))
+	}
+	
+	fmt.Println("%+v", program);
 	// Translate each token starting with the definitions.
 	// Clean up / Execute tests.
 }

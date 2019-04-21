@@ -1,4 +1,4 @@
-(define-fn check (...mtp, i)
+(defun check (...mtp, i)
     (if (= i 0)
         (throw "Bad function...")
         (sha256 (cat
