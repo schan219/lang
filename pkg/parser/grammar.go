@@ -7,21 +7,14 @@ type Program struct {
 type Defs struct {
 	FnDecl  *FnDecl  `"defun" @@`
 	VarDecl *VarDecl `| "defvar" @@`
-	Output  *Output    `| "output" @@`
+	Output  *Output    `| "defoutput" @@`
 	Input  *Input    `| "input" @@`
 }
 
 type Output struct {
-	OutputIndex *int  `@Int`
-	Value  *float64 `@Float`
-	ScriptPubKey *Expr   `@@`
-}
-
-type Input struct {
-	InputIndex *int  `@Int`
-	InputHash  *string `@Ident`
-	InputHashIndex *int `@Int`
-	ScriptSig *Expr   `@@`
+	Name *string  `@Ident`
+	Args []*string `(@Ident)*`
+	Script *Expr   `@@`
 }
 
 type FnDecl struct {
