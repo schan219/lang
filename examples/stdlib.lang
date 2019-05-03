@@ -5,8 +5,10 @@
     (hash160 pubkey)
     (raw OP_EQUALVERIFY OP_CHECKSIG))
 
-(defoutput std.p2pk
-    ())
-(defoutput std.p2sh
-    ())
+(defoutput std.p2pk (sig pubkey)
+    (raw OP_CHECKSIG))
+
+(defoutput std.p2sh (sig pubkey)
+    (raw OP_DUP OP_HASH160)
+    (hash160 pubkey))
 

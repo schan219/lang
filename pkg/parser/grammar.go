@@ -18,6 +18,7 @@ type OutDecl struct {
 
 type FnDecl struct {
 	Name string  `@Ident`
+	FnPtr uint32
 	Args []*Expr `"(" (@@)* ")"`
 	Body *Expr   `@@`
 }
