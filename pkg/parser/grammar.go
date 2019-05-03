@@ -1,19 +1,27 @@
 package parser
 
 type Program struct {
-	DefOrMain []*DefOrMain `"(" @@ ")"`
+	Defs []*Defs `"(" @@ ")"`
 }
 
-type DefOrMain struct {
+type Defs struct {
 	FnDecl  *FnDecl  `"defun" @@`
 	VarDecl *VarDecl `| "defvar" @@`
 	Output  *Output    `| "output" @@`
+	Input  *Input    `| "input" @@`
 }
 
 type Output struct {
-	Output *int  `@Int`
+	OutputIndex *int  `@Int`
 	Value  *float64 `@Float`
-	Body *Expr   `@@`
+	ScriptPubKey *Expr   `@@`
+}
+
+type Input struct {
+	InputIndex *int  `@Int`
+	InputHash  *string `@Ident`
+	InputHashIndex *int `@Int`
+	ScriptSig *Expr   `@@`
 }
 
 type FnDecl struct {
