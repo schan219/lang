@@ -1,0 +1,12 @@
+(package std)
+
+(defoutput std.p2pkh (sig pubkey)
+    (raw OP_DUP OP_HASH160)
+    (hash160 pubkey)
+    (raw OP_EQUALVERIFY OP_CHECKSIG))
+
+(defoutput std.p2pk
+    ())
+(defoutput std.p2sh
+    ())
+
