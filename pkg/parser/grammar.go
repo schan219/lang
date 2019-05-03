@@ -1,17 +1,16 @@
 package parser
 
 type Program struct {
-	Defs []*Defs `"(" @@ ")"`
+	Defs []*Def `"(" @@ ")"`
 }
 
-type Defs struct {
-	FnDecl  *FnDecl  `"defun" @@`
-	VarDecl *VarDecl `| "defvar" @@`
-	Output  *Output    `| "defoutput" @@`
-	Input  *Input    `| "input" @@`
+type Def struct {
+	Function  *FnDecl   `"defun" @@`
+	Variable *VarDecl   `| "defvar" @@`
+	Output  *OutDecl    `| "defoutput" @@`
 }
 
-type Output struct {
+type OutDecl struct {
 	Name *string  `@Ident`
 	Args []*string `(@Ident)*`
 	Script *Expr   `@@`
