@@ -7,11 +7,12 @@ type Program struct {
 type DefOrMain struct {
 	FnDecl  *FnDecl  `"defun" @@`
 	VarDecl *VarDecl `| "defvar" @@`
-	Main    *Main    `| "main" @@`
+	Output  *Output    `| "output" @@`
 }
 
-type Main struct {
-	Args []*Expr `"(" (@@)* ")"`
+type Output struct {
+	Output *int  `@Int`
+	Value  *float64 `@Float`
 	Body *Expr   `@@`
 }
 
