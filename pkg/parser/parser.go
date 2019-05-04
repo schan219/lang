@@ -6,17 +6,15 @@ import (
 )
 
 type Parser struct {
-	FnMap map[int]*FnDecl
-	FnPtrMap map[string]int
-
-	VarMap map[int]*VarDecl
-	VarPtrMap map[string]int
-
+	*SymbolTable
 	OutputList []*OutDecl
 }
 
 func NewParser() *Parser {
-	return &Parser{}
+	p := &Parser{}
+	p.Populate()
+
+	return p
 }
 
 func (p *Parser) Parse(program string) []Defs, error {
@@ -54,4 +52,9 @@ func (p *Parser) updateMap(root &Program) error {
 	}
 
 	return nil
+}
+
+
+func (p *Parser) validateTree(root &Program) error {
+
 }
