@@ -7,7 +7,7 @@ type Program struct {
 type Def struct {
 	Function  *FnDecl   `"defun" @@`
 	Variable *VarDecl   `| "defvar" @@`
-	Output  *OutDecl    `| "defoutput" @@`
+	Output *OutDecl    `| "defoutput" @@`
 }
 
 type OutDecl struct {
@@ -36,6 +36,7 @@ type FnCall struct {
 type Expr struct {
 	Fn   *FnCall `"(" @@ ")"`
 	Atom string  `| @Ident`
+	VarPtr uint32 
 	Str  string  `| @String`
 	Int  int32   `| @Int`
 }
