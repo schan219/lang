@@ -11,8 +11,10 @@ type Def struct {
 }
 
 type OutDecl struct {
+	
+	Number *int `@Int`
 	Name *string  `@Ident`
-	Args []*string `(@Ident)*`
+	Args []*Expr `"(" (@@)* ")"`
 	Script *Expr   `@@`
 }
 

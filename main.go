@@ -2,13 +2,27 @@ package main
 
 import (
 	"fmt"
+	"flag"
+	"os"
+
 	"lang/internals/cli"
 	"lang/pkg/parser"
 	"github.com/alecthomas/participle"
 )
 
+
+var (
+	output string = flag.String("-o", "", "Output TX file")
+	input string = ""
+)
+
+
 func main() {
+	flag.Parse()
+	input := os.Args[1]
+
 	conf := cli.Start()
+	
 
 	// TODO: manage dependencies here.
 

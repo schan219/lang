@@ -17,8 +17,8 @@ func NewParser() *Parser {
 	return p
 }
 
-func (p *Parser) Parse(program string) []Defs, error {
-	var root Program{}
+func (p *Parser) Parse(program string) ([]Defs, error) {
+	var root Program
 	tokenizer, err := participle.Build(&parser.Program{})
 
 	if err != nil {
@@ -33,8 +33,8 @@ func (p *Parser) Parse(program string) []Defs, error {
 }
 
 
-func (p *Parser) updateMap(root &Program) error {
-	for def,_ := Program.Defs {
+func (p *Parser) updateMap(root *Program) error {
+	for def,_ := range Program.Defs {
 		if def.Output != nil {
 
 		} else if def.Function != nil {
@@ -52,9 +52,4 @@ func (p *Parser) updateMap(root &Program) error {
 	}
 
 	return nil
-}
-
-
-func (p *Parser) validateTree(root &Program) error {
-
 }
