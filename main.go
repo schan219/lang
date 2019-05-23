@@ -19,12 +19,13 @@ var (
 
 func main() {
 	flag.Parse()
-	input := os.Args[1]
+	var conf cli.InitConfig
 
-	conf := cli.Start()
-	
-
-	// TODO: manage dependencies here.
+	if len(os.Args) == 1 {
+		conf = cli.Start()
+	} else {
+		conf = cli.Build(os.Args[1], output) 
+	}
 
 	// Tokenize the result.
 	ASTBuilder, err := participle.Build(&parser.Program{})
