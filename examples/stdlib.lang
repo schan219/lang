@@ -1,14 +1,15 @@
 (package std)
 
-(defoutput std.p2pkh (sig pubkey)
+(defoutput p2pkh (sig pubkey)
     (raw OP_DUP OP_HASH160)
     (hash160 pubkey)
     (raw OP_EQUALVERIFY OP_CHECKSIG))
 
-(defoutput std.p2pk (sig pubkey)
+(defoutput p2pk (sig pubkey)
     (raw OP_CHECKSIG))
 
-(defoutput [sig pubkey] std.p2sh (sig pubkey)
-    (raw OP_DUP OP_HASH160)
-    (hash160 pubkey))
-    
+(defoutput [sig pubkey] p2sh (sig pubkey)
+    (raw
+        (raw OP_DUP OP_HASH160)
+        (pushdata
+            (hash160 pubkey))))
