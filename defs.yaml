@@ -1,11 +1,9 @@
-
-commands:
-  -
-    name: raw
-    signature: (raw arg1 arg2 arg3 ...) -> arg1 || arg2 || arg3 || ...
-    description: Returns a non padded concatenation of the arguments.
-  -
-    name: pushdata
-    signature: (pushdata arg1) -> 0x30 || arg1
-    description: Appends the appropriately sized pushdata argument to the
-      beginning of the first and only argument to this command
+-
+  name: raw
+  signature: (raw arg1 arg2 arg3 ...) -> arg1 || arg2 || arg3 || ...
+  description: Returns a non padded concatenation of the arguments.
+-
+  name: pushdata
+  signature: (pushdata arg1) -> 0x30 || arg1
+  description: Appends the appropriately sized pushdata argument to the
+    beginning of the first and only argument to this command

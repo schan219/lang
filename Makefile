@@ -1,5 +1,5 @@
 all:
-	go run main.go
+	go build
 
 test:
 	go test ./test/parser

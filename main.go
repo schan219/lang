@@ -1,14 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"flag"
 	"os"
-
+	"flag"
 	"lang/internals/help"
-	"lang/internals/cli"
-	"lang/pkg/parser"
-	"github.com/alecthomas/participle"
+	_"lang/internals/cli"
 )
 
 const (
@@ -17,23 +13,27 @@ const (
 )
 
 var (
-	output string = flag.String("-o", "", "Output TX file")
+	output *string = flag.String("-o", "", "Output TX file")
 	input string = ""
 )
 
 func main() {
 	flag.Parse()
-	var conf cli.InitConfig
+//	var conf cli.InitConfig
 
 	if len(os.Args) == 1 {
 		panic("No command or input files. Terminated.")
 	}
 	
-	conf = cli.Build(os.Args[1], output)
-	switch os.Args[2] {
+	switch os.Args[1] {
 		case HELP_COMMAND:
-			help.DescribeCommand(os.Args[2])
+			if len(os.Args) < 3 {
+				panic("Cannot help, no command specified")
+			} else {
+				help.DescribeCommand(os.Args[2])
+			}
 		case COMPILE_COMMAND:
+		//	conf = cli.Build(os.Args[1], output)
 	}
 }
 

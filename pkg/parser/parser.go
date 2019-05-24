@@ -51,5 +51,5 @@ func (p *Parser) updateMap(root *Program) error {
 		}
 	}
 
-	return nil
+	return nil	
 }
