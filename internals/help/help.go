@@ -28,14 +28,15 @@ func DescribeCommand(cmd string) {
 
 func showCMD(cmd string, sig string, desc string) {
 	red := color.New(color.FgRed).PrintfFunc()
+	yellow := color.New(color.FgYellow).PrintfFunc()
+
 	red("Command: ")
 	fmt.Println(cmd)
-	red("Fn Signature:")
+	red("Fn Signature: ")
 	fmt.Println(sig)
-	fmt.Printf("\n")
-	color.White("Description:")
+	yellow("Description: ")
 	fmt.Println(desc)
-	fmt.Printf("\n\n")
+	fmt.Printf("\n")
 }
 
 func readDefs() []Description {

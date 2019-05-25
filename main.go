@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	HELP_COMMAND = "help"
+	DOC_COMMAND = "doc"
 	COMPILE_COMMAND = "compile"
 )
 
@@ -26,7 +26,7 @@ func main() {
 	}
 	
 	switch os.Args[1] {
-		case HELP_COMMAND:
+		case DOC_COMMAND:
 			if len(os.Args) < 3 {
 				panic("Cannot help, no command specified")
 			} else {

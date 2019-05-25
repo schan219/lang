@@ -1,9 +1,31 @@
+
 -
   name: raw
-  signature: (raw arg1 arg2 arg3 ...) -> arg1 || arg2 || arg3 || ...
+  signature: (raw arg1 ) -> arg1 || arg2 || arg3 || ...
   description: Returns a non padded concatenation of the arguments.
 -
   name: pushdata
-  signature: (pushdata arg1) -> 0x30 || arg1
-  description: Appends the appropriately sized pushdata argument to the
+  signature: (pushdata Bytes) -> OP_PUSHDATA || arg1
+  description: Appends the appropriately sized, BIP61 compliant, pushdata argument to the
     beginning of the first and only argument to this command
+-
+  name: address
+  signature: (address '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa') -> 0x12341234123412341234
+  description: Converts a Bitcoin compliant address, base58 with a 1 at the beginning, into the raw pubkeyhash
+-
+  name: plus
+  aliases:
+    - +
+    - add
+  signature: (plus a b c ...) -> a + b + c
+  description: Returns the sum of the provided number arguments
+-
+  name: minus
+  aliases:
+    - \-
+  signature: (minus a b c ...) -> ((a - b) - c)
+  description: Returns the difference of provided numbers arguments.
+-
+  name: concat
+  signature: (concat a b c ...) -> a || b || c
+  description: Concatenates provided
