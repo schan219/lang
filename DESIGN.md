@@ -4,7 +4,6 @@
 Variables in Lang can either be lists or bytes/numbers however, support for 32 bit numbers will be removed after [Feb. 2020](https://bitcoinsv.io/2019/04/17/the-roadmap-to-genesis-part-1/). It is strongly, dynamically typed.
 
   
-
 #### Variable Def
 
 For normal numbers or byte strings declarations using strings is fine.
@@ -73,6 +72,14 @@ Functions in Lang are defined almost exactly like that in Lisp. They serve two p
 
 
 ### Output Creation
+Output creation functions are used in `defoutput` and consist of some output paramters (for the scriptSig), and a function call.
+
+```
+(defoutput (pubkey sig)
+    ((p2pkh (address "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa") pubkey sig))
+```
+
+p2pkh will interpret pubkey and sig as output variables which are similar but not like template variables. The main reason for this is because they are assumed to be like normal scriptSig variables.
 
 ### Evaluation Function
 
@@ -82,4 +89,4 @@ Evaluation is more for the conveniance of the programmer. This is what happens w
 (+ 4 10)
 ```
 
-Though, this is a function
+Though, this is a function call it is evaluated at runtime before any template generation happens.
