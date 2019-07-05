@@ -5,11 +5,38 @@
     (hash160 pubkey)
     (raw OP_EQUALVERIFY OP_CHECKSIG))
 
-(defoutput p2pk (sig pubkey)
-    (raw OP_CHECKSIG))
+(defoutput p2pk (pubkeyhash)
+    (cat
+        (pushdata pubkey)
+        OP_CHECKSIG))
 
-(defoutput [sig pubkey] p2sh (sig pubkey)
-    (raw
-        (raw OP_DUP OP_HASH160)
+(defoutput p2sh (sh)
+    (cat
+        OP_DUP
+        OP_HASH160
         (pushdata
             (hash160 pubkey))))
+
+
+(defun p2sh (pubkeyhash)
+    (raw
+        ))
+
+
+(defoutput
+    (func1 arg1 arg2 ....)
+    (sig pkh))
+
+
+
+cat
+pushdata
+
+
+(defun mtp (num root data)
+    (if (= num 0)
+        (= (pop data) root)
+        (if (= )
+            ()
+            ())))
+

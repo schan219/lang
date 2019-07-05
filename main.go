@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"flag"
+	"fmt"
 	"lang/internals/help"
 	_"lang/internals/cli"
 )
@@ -10,6 +11,7 @@ import (
 const (
 	DOC_COMMAND = "doc"
 	COMPILE_COMMAND = "compile"
+	LANG_COMMAND = "lang"
 )
 
 var (
@@ -22,20 +24,24 @@ func main() {
 //	var conf cli.InitConfig
 
 	if len(os.Args) == 1 {
-		panic("No command or input files. Terminated.")
+		fmt.Println("No command or input files. Terminated.")
 	}
 	
 	switch os.Args[1] {
 		case DOC_COMMAND:
 			if len(os.Args) < 3 {
-				panic("Cannot help, no command specified")
+				fmt.Printf("doc works via: %s doc <function>\n", LANG_COMMAND)
 			} else {
 				help.DescribeCommand(os.Args[2])
 			}
 		case COMPILE_COMMAND:
-		//	conf = cli.Build(os.Args[1], output)
+			conf = cli.Build(os.Args[1], output)
+			
 	}
 }
+
+
+
 
 /**
 
