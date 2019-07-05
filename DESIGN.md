@@ -28,17 +28,7 @@ Lists can also be declared via the list function with mixed types.
 (defvar c (list 1 2 3 4 5 6 "foo"))
 
 ```
-
-  
-
-However,
-
-  
-  
-
 ### Template Variables
-
-  
 
 Template variables do not actually hold any information duing runtime but instead are placeholders for information put in post-compilation. Sometimes it maybe useful to create templates using Lang. For example, if one wanted to create an output that can be reused with different keys this would how that could be executed.
 
@@ -73,3 +63,23 @@ If compiled as binary the `OP_NOP`, 97, is used instead of the underscore charac
 #### Exception for lists
 
 Due to the complicated nature of Lang lists there is no support at the moment to support templated lists.
+
+
+
+## Functions
+Functions in Lang are defined almost exactly like that in Lisp. They serve two purposes however:
+    a.) Output Creation
+    b.) Evaluation
+
+
+### Output Creation
+
+### Evaluation Function
+
+Evaluation is more for the conveniance of the programmer. This is what happens when all your variables are predefined. For example, take the function call:
+
+```lisp
+(+ 4 10)
+```
+
+Though, this is a function
